@@ -22,3 +22,11 @@ std::future<int> func()
     co_return res;
 }
 ```
+
+Output of main.cpp:
+```
+Not ready
+Not ready
+Not ready
+30
+```
