@@ -5,7 +5,7 @@
 #include <chrono>
 #include <optional>
 
-template<typename T>
+template<std::movable T>
 class SafeQueue
 {
     std::queue<T> _queue;
@@ -25,25 +25,6 @@ public:
         _condition_variable.notify_one();
     }
 
-    void push(const T& value)
-    {
-        {
-            std::lock_guard<std::mutex> lock(_mutex);
-            _queue.push(value);
-        }
-
-        _condition_variable.notify_one();
-    }
-
-    void push(T&& value)
-    {
-        {
-            std::lock_guard<std::mutex> lock(_mutex);
-            _queue.push(std::move(value));
-        }
-
-        _condition_variable.notify_one();
-    }
     std::optional<T> pop()
     {
         std::unique_lock<std::mutex> lock(_mutex);
@@ -54,9 +35,9 @@ public:
             return {};
         }
 
-        auto value = std::forward<T>(_queue.front());
+        auto value = std::move(_queue.front());
         _queue.pop();
 
-        return { std::forward<T>(value) };
+        return { std::move(value) };
     }
 };

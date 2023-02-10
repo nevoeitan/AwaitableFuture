@@ -24,7 +24,7 @@ public:
         Task packaged_task(std::move(task));
         auto task_future = packaged_task.get_future();
 
-        _tasks->push(std::move(packaged_task));
+        _tasks->emplace(std::move(packaged_task));
 
         return task_future;
     }
